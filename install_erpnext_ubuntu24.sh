@@ -122,7 +122,11 @@ sql_mode = ""
 CNF
   systemctl restart mariadb
   log "Securing MariaDB users and defaults"
-  mysql --user=root <<SQL
+  MYSQL_CMD=(mysql --user=root)
+  if ! "${MYSQL_CMD[@]}" -e "SELECT 1;" >/dev/null 2>&1; then
+    MYSQL_CMD=(mysql --user=root --password="${DB_ROOT_PASSWORD}")
+  fi
+  "${MYSQL_CMD[@]}" <<SQL
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${DB_ROOT_PASSWORD}';
 DELETE FROM mysql.user WHERE User='';
 DROP DATABASE IF EXISTS test;
