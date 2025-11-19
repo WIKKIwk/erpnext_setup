@@ -123,7 +123,6 @@ CNF
   systemctl restart mariadb
   log "Securing MariaDB users and defaults"
   mysql --user=root <<SQL
-ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${DB_ROOT_PASSWORD}';
 DELETE FROM mysql.user WHERE User='';
 DROP DATABASE IF EXISTS test;
