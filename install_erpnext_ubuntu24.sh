@@ -154,7 +154,13 @@ create_erp_user() {
 }
 
 install_bench() {
-  sudo -u "${ERP_USER}" -H bash -c "pipx install --force frappe-bench==${BENCH_VERSION}"
+  run_step "Installing bench via pipx" sudo -u "${ERP_USER}" -H bash -c "pipx install --force frappe-bench==${BENCH_VERSION}"
+  # ensure ~/.local/bin is on PATH for non-login contexts
+  sudo -u "${ERP_USER}" -H bash -c "pipx ensurepath >/dev/null 2>&1 || true"
+}
+
+ensure_process_manager() {
+  run_step "Installing process manager (honcho)" sudo -u "${ERP_USER}" -H bash -c "pipx install --force honcho"
 }
 
 setup_bench_instance() {
@@ -194,6 +200,7 @@ main() {
   configure_redis
   create_erp_user
   install_bench
+  ensure_process_manager
   setup_bench_instance
   finalize_hosts
   log "All done. Switch to user ${ERP_USER} and run 'bench start' from ${BENCH_DIR}/${BENCH_NAME}."
