@@ -127,7 +127,8 @@ CNF
     MYSQL_CMD=(mysql --user=root --password="${DB_ROOT_PASSWORD}")
   fi
   "${MYSQL_CMD[@]}" <<SQL
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${DB_ROOT_PASSWORD}';
+ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password;
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${DB_ROOT_PASSWORD}');
 DELETE FROM mysql.user WHERE User='';
 DROP DATABASE IF EXISTS test;
 DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
